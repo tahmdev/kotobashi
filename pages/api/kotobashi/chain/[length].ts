@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import w10000 from "../../../10000.json";
-import getWordChain from "../../../utils/getWordChain";
+import w10000 from "../../../../10000.json";
+import getWordChain from "../../../../utils/getWordChain";
 const wordList = w10000
   .map((el) => el.kanji)
   .filter(
@@ -15,8 +15,8 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const chain = getWordChain(wordList, 5);
-  console.log(chain);
+  const length = Number(req.query.length);
+  const chain = getWordChain(wordList, length);
 
   res.status(200).json({ chain });
 }
