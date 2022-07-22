@@ -1,0 +1,58 @@
+.kotobashiWrapper {
+  --font-size: 1.5rem;
+}
+
+.fieldWrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  overflow: auto;
+  border-bottom: 1px solid var(--text-color);
+}
+.field {
+  font-size: var(--font-size);
+  word-break: keep-all;
+  color: transparent;
+  width: fit-content;
+  background-color: var(--bg-400);
+}
+.solved {
+  color: var(--text-color);
+}
+.guesses {
+  width: 100%;
+  display: flex;
+  margin-right: 2rem;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  overflow: auto;
+  flex-wrap: wrap;
+}
+.guess {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  font-size: var(--font-size);
+  background-color: var(--bg-400);
+}
+.goodGuess {
+  color: coral;
+}
+.correctGuess {
+  color: rgb(44, 224, 104);
+}
+.inputForm {
+  display: flex;
+}
+.inputForm > input {
+  width: 100%;
+  font-size: 1.4rem;
+  height: 2rem;
+  flex: 1 1 auto;
+}
