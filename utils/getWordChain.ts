@@ -1,6 +1,6 @@
 function getWordChain(words: string[], length: number, start?: number) {
   if (!start) start = randomIndex(words);
-  let result = [words[start], "方式"];
+  let result = [words[start]];
   while (result.length < length && words.length) {
     if (!result.length) {
       result = [words[randomIndex(words)]];
