@@ -6,7 +6,10 @@ interface Props {
   chain: string[];
 }
 export const KBGuess: React.FC<Props> = ({ guess, chain }) => {
-  if (chain.includes(guess))
+  const hiddenChain = chain.filter(
+    (el, idx) => idx !== 0 && idx !== chain.length - 1
+  );
+  if (hiddenChain.includes(guess))
     return (
       <div className={styles.guess}>
         <span className={styles.correctGuess}> {guess} </span>
@@ -14,10 +17,14 @@ export const KBGuess: React.FC<Props> = ({ guess, chain }) => {
     );
   return (
     <div className={styles.guess}>
-      {guess.split("").map((el) => {
-        if (chain.some((chainEl) => chainEl.includes(el)))
-          return <span className={styles.goodGuess}> {el} </span>;
-        return <span> {el} </span>;
+      {guess.split("").map((kanji, idx) => {
+        if (hiddenChain.some((el) => el.includes(kanji)))
+          return (
+            <span className={styles.goodGuess} key={idx}>
+              {kanji}
+            </span>
+          );
+        return <span key={idx}> {kanji} </span>;
       })}
     </div>
   );
