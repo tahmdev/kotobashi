@@ -6,11 +6,12 @@ import { KBGuess } from "../components/kotobashi/guess";
 import styles from "../styles/Kotobashi.module.css";
 import isOnlyKanji from "../utils/isOnlyKanji";
 import useLocalStorage from "../hooks/useLocalStorage";
+import { KBControls } from "../components/kotobashi/controls";
 
 //Daily/free button text toggle
 // Track stats: You solved X easy puzzles. Your average amount of guesses is Y
-// Save guesses for current puzzle in local storage
-// if localstorage.difficulty === JSON.stringify(chain) {setGuesses()}
+// Don't allow double guesses
+// LABEL RANGE
 
 const Home: NextPage = () => {
   const [chain, setChain] = useState<string[]>([]);
@@ -19,13 +20,7 @@ const Home: NextPage = () => {
   const [length, setLength] = useState("4");
   const [free, setFree] = useState(false);
   const [url, setUrl] = useState("/api/kotobashi/daily/easy");
-  const [local, setLocal] = useLocalStorage("kotobashi", {
-    easy: { chain: [], guesses: [] },
-    medium: { chain: [], guesses: [] },
-    hard: { chain: [], guesses: [] },
-    totalSolved: 0,
-    averageGuesses: 0,
-  });
+  const [local, setLocal] = useLocalStorage("kotobashi", initLocal);
 
   useEffect(() => {
     getChain();
@@ -49,19 +44,6 @@ const Home: NextPage = () => {
     }
   }, [chain]);
 
-  const addGuess = (guess: string) => {
-    if (isOnlyKanji(guess) && guess.length === 2) {
-      setGuesses((prev) => [...prev, guess]);
-      setLocal({
-        ...local,
-        [difficulty]: {
-          chain: local[difficulty].chain,
-          guesses: [...guesses, guess],
-        },
-      });
-    }
-  };
-
   useEffect(() => {
     if (!free) {
       setUrl(`/api/kotobashi/daily/${difficulty}`);
@@ -69,6 +51,21 @@ const Home: NextPage = () => {
       setUrl(`/api/kotobashi/free/${difficulty}/${length}`);
     }
   }, [length, difficulty, free]);
+
+  const addGuess = (guess: string) => {
+    if (isOnlyKanji(guess) && guess.length === 2) {
+      if (!free) {
+        let newLocal = { ...local };
+        newLocal[difficulty] = {
+          chain: local[difficulty].chain,
+          guesses: [...guesses, guess],
+        };
+        newLocal.stats[difficulty].totalGuesses++;
+        setLocal(newLocal);
+      }
+      setGuesses((prev) => [...prev, guess]);
+    }
+  };
 
   return (
     <div className={`container ${styles.kotobashiWrapper} `}>
@@ -125,3 +122,23 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+const initLocal = {
+  easy: { chain: [], guesses: [] },
+  medium: { chain: [], guesses: [] },
+  hard: { chain: [], guesses: [] },
+  stats: {
+    easy: {
+      totalSolved: 0,
+      totalGuesses: 0,
+    },
+    medium: {
+      totalSolved: 0,
+      totalGuesses: 0,
+    },
+    hard: {
+      totalSolved: 0,
+      totalGuesses: 0,
+    },
+  },
+};
