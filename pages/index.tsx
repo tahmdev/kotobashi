@@ -69,30 +69,16 @@ const Home: NextPage = () => {
 
   return (
     <div className={`container ${styles.kotobashiWrapper} `}>
-      <div>
-        {["Easy", "Medium", "Hard"].map((el) => (
-          <button
-            key={el}
-            onClick={() => setDifficulty(el.toLocaleLowerCase())}
-          >
-            {el}
-          </button>
-        ))}
-        <button onClick={() => setFree(!free)}>Free</button>
-        {free && (
-          <div>
-            <button onClick={() => setGuesses(chain)}>solve</button>
-            <button onClick={getChain}>new</button>
-            <input
-              type="range"
-              value={length}
-              onChange={(e) => setLength(e.target.value)}
-              min={4}
-              max={50}
-            />
-          </div>
-        )}
-      </div>
+      <KBControls
+        length={length}
+        chain={chain}
+        free={free}
+        getChain={getChain}
+        setDifficulty={setDifficulty}
+        setFree={setFree}
+        setGuesses={setGuesses}
+        setLength={setLength}
+      />
 
       <div className={styles.fieldWrapper}>
         {chain?.map((el, idx) => (
