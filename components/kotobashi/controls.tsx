@@ -20,6 +20,12 @@ export const KBControls: React.FC<Props> = ({
   setLength,
   getChain,
 }) => {
+  const solve = () => {
+    const hiddenChain = chain.filter(
+      (_, idx) => idx !== 0 && idx !== chain.length - 1
+    );
+    setGuesses(hiddenChain);
+  };
   return (
     <div>
       {["Easy", "Medium", "Hard"].map((el) => (
@@ -30,7 +36,7 @@ export const KBControls: React.FC<Props> = ({
       <button onClick={() => setFree(!free)}>Free</button>
       {free && (
         <div>
-          <button onClick={() => setGuesses(chain)}>solve</button>
+          <button onClick={solve}>solve</button>
           <button onClick={getChain}>new</button>
           <input
             type="range"
