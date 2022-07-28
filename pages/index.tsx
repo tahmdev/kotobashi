@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { InputWithButton } from "../components/general/inputWithButton";
 import { KBField } from "../components/kotobashi/field";
 import { KBGuess } from "../components/kotobashi/guess";
+import { KBControls } from "../components/kotobashi/controls";
 import styles from "../styles/Kotobashi.module.css";
 import isOnlyKanji from "../utils/isOnlyKanji";
 import useLocalStorage from "../hooks/useLocalStorage";
-import { KBControls } from "../components/kotobashi/controls";
+import { KBStats } from "../components/kotobashi/stats";
 
 //Daily/free button text toggle
 // Track stats: You solved X easy puzzles. Your average amount of guesses is Y
@@ -21,6 +22,7 @@ const Home: NextPage = () => {
   const [free, setFree] = useState(false);
   const [url, setUrl] = useState("/api/kotobashi/daily/easy");
   const [local, setLocal] = useLocalStorage("kotobashi", initLocal);
+  const [solved, setSolved] = useState(false);
 
   useEffect(() => {
     getChain();
@@ -30,17 +32,21 @@ const Home: NextPage = () => {
     fetch(url)
       .then((res) => res.json())
       .then((json) => setChain(json.chain));
-    setGuesses([]);
   };
 
   useEffect(() => {
     if (!free && chain.length) {
       if (!chain.every((el) => local[difficulty].chain.includes(el))) {
-        setLocal({ ...local, [difficulty]: { chain, guesses: [] } });
+        setLocal({
+          ...local,
+          [difficulty]: { chain, guesses: [], solved: false },
+        });
         setGuesses([]);
       } else {
         setGuesses(local[difficulty].guesses);
       }
+    } else {
+      setGuesses([]);
     }
   }, [chain]);
 
@@ -59,12 +65,36 @@ const Home: NextPage = () => {
         newLocal[difficulty] = {
           chain: local[difficulty].chain,
           guesses: [...guesses, guess],
+          solved,
         };
-        newLocal.stats[difficulty].totalGuesses++;
         setLocal(newLocal);
       }
       setGuesses((prev) => [...prev, guess]);
     }
+  };
+
+  useEffect(() => {
+    if (chain.length && isSolved()) {
+      if (!free) {
+        if (!local[difficulty].solved) {
+          let newLocal = { ...local };
+          newLocal.stats[difficulty].totalGuesses += guesses.length;
+          newLocal.stats[difficulty].totalSolved++;
+          newLocal[difficulty].solved = true;
+          setLocal(newLocal);
+        }
+      }
+      setSolved(true);
+    } else {
+      setSolved(false);
+    }
+  }, [guesses]);
+
+  const isSolved = () => {
+    const hiddenChain = chain.filter(
+      (_, idx) => idx !== 0 && idx !== chain.length - 1
+    );
+    return hiddenChain.every((el) => guesses.includes(el));
   };
 
   return (
@@ -99,9 +129,24 @@ const Home: NextPage = () => {
       </div>
 
       <div>
-        <InputWithButton formClass={styles.inputForm} onSend={addGuess}>
+        <InputWithButton
+          disabled={solved}
+          formClass={styles.inputForm}
+          onSend={addGuess}
+        >
           Guess
         </InputWithButton>
+      </div>
+
+      <div>
+        {local && solved && (
+          <KBStats
+            difficulty={difficulty}
+            stats={local.stats}
+            free={free}
+            guesses={guesses}
+          />
+        )}
       </div>
     </div>
   );
@@ -110,9 +155,9 @@ const Home: NextPage = () => {
 export default Home;
 
 const initLocal = {
-  easy: { chain: [], guesses: [] },
-  medium: { chain: [], guesses: [] },
-  hard: { chain: [], guesses: [] },
+  easy: { chain: [], guesses: [], solved: false },
+  medium: { chain: [], guesses: [], solved: false },
+  hard: { chain: [], guesses: [], solved: false },
   stats: {
     easy: {
       totalSolved: 0,
