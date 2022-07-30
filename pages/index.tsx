@@ -9,10 +9,7 @@ import isOnlyKanji from "../utils/isOnlyKanji";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { KBStats } from "../components/kotobashi/stats";
 
-//Daily/free button text toggle
-// Track stats: You solved X easy puzzles. Your average amount of guesses is Y
-// Don't allow double guesses
-// LABEL RANGE
+// CHANGE TOP LEFT LINK TO JUST TEXT
 
 const Home: NextPage = () => {
   const [chain, setChain] = useState<string[]>([]);
@@ -54,12 +51,12 @@ const Home: NextPage = () => {
     if (!free) {
       setUrl(`/api/kotobashi/daily/${difficulty}`);
     } else {
-      setUrl(`/api/kotobashi/free/${difficulty}/${length}`);
+      setUrl(`/api/kotobashi/free/${difficulty}/${length || 4}`);
     }
   }, [length, difficulty, free]);
 
   const addGuess = (guess: string) => {
-    if (isOnlyKanji(guess) && guess.length === 2) {
+    if (isOnlyKanji(guess) && guess.length === 2 && !guesses.includes(guess)) {
       if (!free) {
         let newLocal = { ...local };
         newLocal[difficulty] = {
@@ -103,6 +100,7 @@ const Home: NextPage = () => {
         length={length}
         chain={chain}
         free={free}
+        difficulty={difficulty}
         getChain={getChain}
         setDifficulty={setDifficulty}
         setFree={setFree}
