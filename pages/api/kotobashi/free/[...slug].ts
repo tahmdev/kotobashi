@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import w10000 from "../../../../10000.json";
 import getWordChain from "../../../../utils/getWordChain";
 import isOnlyKanji from "../../../../utils/isOnlyKanji";
+import minMax from "../../../../utils/minMax";
 
 interface IWordlist {
   [key: string]: string[];
@@ -30,7 +31,7 @@ export default function handler(
   if (req.query.slug?.length === 2) {
     const difficulty = req.query.slug[0];
     const length = Number(req.query.slug[1]);
-    const chain = getWordChain(wordList[difficulty], length);
+    const chain = getWordChain(wordList[difficulty], minMax(4, 50, length));
     res.status(200).json({ chain });
   }
 }
