@@ -1,12 +1,16 @@
 .kotobashiWrapper {
   --font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .fieldWrapper {
-  width: 100%;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  max-width: 23rem;
   gap: 1rem;
   padding-bottom: 1rem;
   margin-bottom: 1rem;
@@ -24,9 +28,8 @@
   color: var(--text-color);
 }
 .guesses {
-  width: 100%;
   display: flex;
-  margin-right: 2rem;
+  max-width: 23rem;
   gap: 1rem;
   margin-bottom: 1rem;
   overflow: auto;
@@ -52,7 +55,59 @@
 }
 .inputForm > input {
   width: 100%;
+  max-width: 300px;
   font-size: 1.4rem;
   height: 2rem;
   flex: 1 1 auto;
+}
+
+/*Controls*/
+.controlsWrapper {
+  width: 100%;
+  max-width: 23rem;
+}
+.buttonWrapper {
+  display: flex;
+  margin-bottom: 1rem;
+}
+.buttonWrapper > * {
+  flex-basis: 100%;
+  background-color: red;
+  border: none;
+}
+.buttonWrapper > * + * {
+  margin-left: 1rem;
+}
+.activeDifficulty {
+  background-color: greenyellow;
+}
+.freeControls {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.freeControls > * {
+  flex-basis: 100%;
+}
+.freeControls > div {
+  display: flex;
+  margin-right: 1rem;
+}
+.freeControls > div > * {
+  flex-basis: 100%;
+}
+.freeControls > div > * + * {
+  margin-left: 1rem;
+}
+.freeControls > label {
+  display: flex;
+}
+.freeControls > label > * {
+  flex-basis: 100%;
+}
+.freeControls > label > * + * {
+  margin-left: 1rem;
+}
+.freeControls > label > span {
+  text-align: end;
 }

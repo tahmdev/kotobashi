@@ -1,9 +1,11 @@
 import React from "react";
+import styles from "../../styles/Kotobashi.module.css";
 
 interface Props {
   length: string;
   chain: string[];
   free: boolean;
+  difficulty: string;
   setFree: React.Dispatch<React.SetStateAction<boolean>>;
   setGuesses: React.Dispatch<React.SetStateAction<string[]>>;
   setDifficulty: React.Dispatch<React.SetStateAction<string>>;
@@ -14,6 +16,7 @@ export const KBControls: React.FC<Props> = ({
   length,
   chain,
   free,
+  difficulty,
   setFree,
   setGuesses,
   setDifficulty,
@@ -27,24 +30,42 @@ export const KBControls: React.FC<Props> = ({
     setGuesses(hiddenChain);
   };
   return (
-    <div>
-      {["Easy", "Medium", "Hard"].map((el) => (
-        <button key={el} onClick={() => setDifficulty(el.toLowerCase())}>
-          {el}
+    <div className={styles.controlsWrapper}>
+      <div className={styles.buttonWrapper}>
+        {["Easy", "Medium", "Hard"].map((el) => (
+          <button
+            className={
+              difficulty === el.toLocaleLowerCase()
+                ? styles.activeDifficulty
+                : ""
+            }
+            key={el}
+            onClick={() => setDifficulty(el.toLowerCase())}
+          >
+            {el}
+          </button>
+        ))}
+        <button onClick={() => setFree(!free)}>
+          {free ? "Daily" : "Free"}
         </button>
-      ))}
-      <button onClick={() => setFree(!free)}>Free</button>
+      </div>
+
       {free && (
-        <div>
-          <button onClick={solve}>solve</button>
-          <button onClick={getChain}>new</button>
-          <input
-            type="range"
-            value={length}
-            onChange={(e) => setLength(e.target.value)}
-            min={4}
-            max={50}
-          />
+        <div className={styles.freeControls}>
+          <div>
+            <button onClick={getChain}>New</button>
+            <button onClick={solve}>Solve</button>
+          </div>
+          <label>
+            <span> Length: </span>
+            <input
+              type="number"
+              max={50}
+              min={4}
+              value={length}
+              onChange={(e) => setLength(e.target.value)}
+            />
+          </label>
         </div>
       )}
     </div>
