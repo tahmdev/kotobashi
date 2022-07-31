@@ -53,9 +53,6 @@ const KBMain: React.FC = () => {
 
   return (
     <div className={`container ${styles.kotobashiWrapper} `}>
-      <button onClick={() => setChain(["何何", "何何", "何何", "何何"])}>
-        aaaa
-      </button>
       <KBControls
         chain={chain}
         free={free}
